@@ -15,3 +15,7 @@ wheels/
 *.pt
 *.pth
 *.onnx
+
+# Data and outputs
+data/
+outputs/

@@ -1,15 +1,25 @@
-from typing import Any
+from typing import Any, Optional
 import onnxruntime as ort
 import numpy as np
 from pathlib import Path
 from src.extractors.base import BaseFeatureExtractor
+from src.core.resource_guard import get_onnx_session_options, get_onnx_providers
+
 
 class ONNXFeatureExtractor(BaseFeatureExtractor):
-    def __init__(self, model_path: Path | str) -> None:
+    def __init__(
+        self,
+        model_path: Path | str,
+        num_threads: Optional[int] = None,
+        gpu_mem_limit_bytes: Optional[int] = None,
+    ) -> None:
         super().__init__(model_path)
+        sess_options = get_onnx_session_options(num_threads=num_threads)
+        providers = get_onnx_providers(gpu_mem_limit_bytes=gpu_mem_limit_bytes)
         self.session = ort.InferenceSession(
-            path_or_bytes=self.model_path,
-            providers=['CUDAExecutionProvider', 'CPUExecutionProvider']
+            path_or_bytes=str(self.model_path),
+            sess_options=sess_options,
+            providers=providers,
         )
         self.input_name = self.session.get_inputs()[0].name
 

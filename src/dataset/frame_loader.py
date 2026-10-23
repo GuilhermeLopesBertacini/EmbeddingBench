@@ -86,7 +86,8 @@ def load_dataset_by_config(
         sku = sku_dir.name
         sku_frames: List[FrameMetadata] = []
 
-        for img_path in sorted(sku_dir.glob("*.jpg")):
+        # Busca recursiva para cobrir subpastas como 'unknown', 'without_bag', 'with_bag'
+        for img_path in sorted(sku_dir.rglob("*.jpg")):
             meta = parse_frame_filename(img_path, sku)
             if meta and meta.config_tag == target_config:
                 sku_frames.append(meta)

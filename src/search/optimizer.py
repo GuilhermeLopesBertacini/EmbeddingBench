@@ -29,6 +29,12 @@ class EmulationSearchEngine:
         self.target_size = target_size
 
         raw_dataset = load_dataset_by_config(scale_frames_dir, target_config=target_config)
+        if not raw_dataset:
+            raise ValueError(
+                f"Nenhuma imagem encontrada em '{scale_frames_dir}' com a tag de câmera '{target_config}'. "
+                f"Verifique se o caminho existe e se o padrão de nomes das imagens corresponde à configuração."
+            )
+
         self.cached_images: List[np.ndarray] = []
         self.labels: List[str] = []
 
